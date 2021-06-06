@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include('./layouts/head'); %>
+<link href="/css/template_style.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<div class="main">
+	<div class="button-box">
+		<div id="btn"></div>
+		<button type="button" class="toggle-btn" onclick="login()">Log In</button>
+		<button type="button" class="toggle-btn" onclick="register()">Register</button>
+	</div>
+
+	<i class="fas fa-user-circle icon fa-4x"></i>
+	<div class="mid_div">
+		<form action="/login" method="POST">
+		<input type="text" placeholder="username" id="xyz" name="username" autocomplete="off">
+		<input type="password" id="password" name="password" placeholder="Password" autocomplete="off"> 
+		<button class="btn1">Log In</button>
+	</form>
+	</div>
+	<div class="design_top">
+		<img src="/img/image.png" class="img-fluid" >
+		
+	</div>
+	<div class="design">
+		<img src="/img/design3.png" class="img-fluid" >
+	</div>
+</div>
+<!-- <form action="/login" method="POST">
+    <label for="username">UserName</label>
+    <input type="text" placeholder="username" id="xyz" name="username">
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password">
+    <button>Login</button>
+</form>
+<ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="/register">SignUp</a></li>
+</ul> -->
+
+<script type="text/javascript">
+	var b = document.getElementById("btn");
+
+	function register(){
+		b.style.left = "110px";
+	}
+	function login(){
+		b.style.left = "-10px";
+	}
+
+</script>
+
+</body>
+</html>

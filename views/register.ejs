@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include('./layouts/head'); %>
+<link href="/css/template_style.css" rel="stylesheet" type="text/css">
+<style type="text/css">
+    .mid_div{
+        height: 50%;
+    }
+    h1{
+        font-size: 3.5em;
+    }
+    .icon{
+        top:20%;
+    }
+    .bottom_btn{
+        position: absolute;
+        bottom:18%;
+        right: 35%;
+    }
+    .btn2{
+    background-image: linear-gradient(to right, #ff8177 0%, #ff867a 0%, #ff8c7f 21%, #f99185 52%, #cf556c 78%, #b12a5b 100%);
+    color:white;
+    border: none;
+    font-size: 1.5em;
+    padding: 5%;  
+    }
+
+   
+   @media only screen and (max-width: 768px) {
+    .mid_div{
+        height: 100%;
+    }
+    .icon{
+        font-size: 2.5em;
+    }
+    h1{
+        font-size: 3em;
+        top:8%;
+    }
+    form input{
+        height: 70%;
+        font-size: 1.8em;
+    }
+
+   }
+</style>
+</head>
+<body>
+
+<div class="main">
+    <h1>Registration</h1><i class="fas fa-handshake fa-2x icon"></i>
+    <!-- <i class="fas fa-user-circle icon fa-4x"></i> -->
+    <div class="mid_div">
+        <form action="/register" method="POST">
+        <input type="text" id="username" name="username" placeholder="username" autocomplete="off">
+        <input type="Email" id="email" name="email" placeholder="email" autocomplete="off">
+        <input type="password" id="password" name="password" placeholder="password" autocomplete="off">
+        <input type="number" id="mobile_no" name="mobile_no" placeholder="mobile_number" autocomplete="off">
+        <button class="btn1">Submit</button>
+        </form>
+    </div>
+    <!-- <div class="bottom_btn"><a href=""><button class="btn2">Login</button></a></div> -->
+
+<div class="design_top">
+    <img src="/img/image.png" class="img-fluid" >
+</div>
+<div class="design">
+    <img src="/img/design3.png" class="img-fluid" >
+</div>
+</div>        
+<!-- <ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="/login">login</a></li>
+</ul> -->
+
+</body>
+</html>
