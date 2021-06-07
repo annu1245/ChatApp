@@ -15,9 +15,7 @@ const User                  =  require("./models/users");
 
 
 
-app.get('/chat', (req, res) => {
-  res.sendFile(__dirname + '/index2.html');
-});
+
 app.use(express.static(__dirname + '/public'));
 
 //In app.js
@@ -53,6 +51,8 @@ passport.serializeUser(User.serializeUser());       //session encoding
 passport.deserializeUser(User.deserializeUser());   //session decoding
 passport.use(new LocalStrategy(User.authenticate()));
 
+
+
 app.set("view engine","ejs");
 app.use(bodyParser.urlencoded(
       { extended:true }
@@ -66,16 +66,25 @@ app.use(passport.session());
 app.get("/", (req,res) =>{
     res.render("home");
 })
+
+app.get("/chat", isLoggedIn, (req, res) => {
+  res.sendFile(__dirname + '/index2.html');
+});
 app.get("/userprofile",isLoggedIn ,(req,res) =>{
     res.render("userprofile");
 })
 //Auth Routes
 app.get("/login",(req,res)=>{
-    res.render("login");
+    if(req.isAuthenticated()){
+        return res.redirect("/chat");
+    }
+    else{
+    return res.render("login", {"status": 0});
+    }
 });
 
 app.post("/login",passport.authenticate("local",{
-    successRedirect:"/userprofile",
+    successRedirect:"/chat",
     failureRedirect:"/login"
 }),function (req, res){
 });
@@ -91,7 +100,9 @@ app.post("/register",(req,res)=>{
     	req.body.password,function(err,user){
         if(err){
             console.log(err);
-            res.render("register");
+            res.render('login', {"status": 1});
+            // res.redirect("/login");
+            
         }
     passport.authenticate("local")(req,res,function(){
         res.redirect("/login");
@@ -106,9 +117,11 @@ app.get("/logout",(req,res)=>{
 
 function isLoggedIn(req,res,next) {
     if(req.isAuthenticated()){
+        console.log(req.isAuthenticated());
         return next();
     }
-    res.redirect("/login");
+    return res.render("login", {"status": 0});
+    // console.log("hi");
 }
 
 

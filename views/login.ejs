@@ -12,14 +12,23 @@
 		<button type="button" class="toggle-btn" onclick="register()">Register</button>
 	</div>
 
-	<i class="fas fa-user-circle icon fa-4x"></i>
-	<div class="mid_div">
-		<form action="/login" method="POST">
+	<i class="fas fa-user-circle icon fa-4x" id="auth_logo"></i>
+	<div class="mid_div_login" id="login">
+	<form action="/login" method="POST">
 		<input type="text" placeholder="username" id="xyz" name="username" autocomplete="off">
 		<input type="password" id="password" name="password" placeholder="Password" autocomplete="off"> 
 		<button class="btn1">Log In</button>
 	</form>
 	</div>
+	<div class="mid_div_register" id="register">
+        <form action="/register" method="POST">
+        <input type="text" id="username" name="username" placeholder="username" autocomplete="off">
+        <input type="Email" id="email" name="email" placeholder="email" autocomplete="off">
+        <input type="password" id="password" name="password" placeholder="password" autocomplete="off">
+        <input type="number" id="mobile_no" name="mobile_no" placeholder="mobile_number" autocomplete="off">
+        <button class="btn1">Submit</button>
+        </form>
+    </div>
 	<div class="design_top">
 		<img src="/img/image.png" class="img-fluid" >
 		
@@ -42,12 +51,32 @@
 
 <script type="text/javascript">
 	var b = document.getElementById("btn");
+	var l = document.getElementById("login");
+	var r = document.getElementById("register");
+	var auth_logo = document.getElementById("auth_logo");
+
+	var status = <%= status %>
+	if(status == 1){
+		register();
+	}
+	else{
+		login();
+	}
 
 	function register(){
-		b.style.left = "110px";
+		b.style.left = "110px";  
+		l.style.visibility = 'hidden';  
+		r.style.visibility = 'visible';
+		auth_logo.classList.remove("fa-user-circle");  
+		auth_logo.classList.add("fa-handshake");  
 	}
 	function login(){
 		b.style.left = "-10px";
+		r.style.visibility = 'hidden';  
+		l.style.visibility = 'visible';
+		auth_logo.classList.remove("fa-handshake");  
+		auth_logo.classList.add("fa-user-circle");  
+
 	}
 
 </script>
