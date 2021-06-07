@@ -70,11 +70,12 @@ app.get("/", (req,res) =>{
 app.get("/chat", isLoggedIn, (req, res) => {
   res.sendFile(__dirname + '/index2.html');
 });
+
 app.get("/userprofile",isLoggedIn ,(req,res) =>{
     res.render("userprofile");
 })
 //Auth Routes
-app.get("/login",(req,res)=>{
+app.get("/auth",(req,res)=>{
     if(req.isAuthenticated()){
         return res.redirect("/chat");
     }
@@ -85,7 +86,7 @@ app.get("/login",(req,res)=>{
 
 app.post("/login",passport.authenticate("local",{
     successRedirect:"/chat",
-    failureRedirect:"/login"
+    failureRedirect:"/auth"
 }),function (req, res){
 });
 
@@ -101,11 +102,11 @@ app.post("/register",(req,res)=>{
         if(err){
             console.log(err);
             res.render('login', {"status": 1});
-            // res.redirect("/login");
+            // res.redirect("/auth");
             
         }
     passport.authenticate("local")(req,res,function(){
-        res.redirect("/login");
+        res.redirect("/auth");
     })    
     })
 })
@@ -120,7 +121,8 @@ function isLoggedIn(req,res,next) {
         console.log(req.isAuthenticated());
         return next();
     }
-    return res.render("login", {"status": 0});
+    res.redirect("/auth");
+    // return res.render("login", {"status": 0});
     // console.log("hi");
 }
 
