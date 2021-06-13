@@ -8,3 +8,11 @@
     <li><a href="/">Home</a></li>
     <li><a href="/logout">Logout</a></li>
 </ul>
+
+<% practices.forEach(function (practice) { %>
+   <li> <%= practice.username %></li> <!-- note you defined the field as Name not name -->
+   <li> <%= practice.email %></li> <!-- note you defined the field as Name not name -->
+   <li> <%= practice.mobile %></li> <!-- note you defined the field as Name not name -->
+<% }) %>
+<!--  -->
+

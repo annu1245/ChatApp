@@ -12,8 +12,9 @@ const bodyParser            =  require("body-parser");
 const LocalStrategy         =  require("passport-local");
 const passportLocalMongoose =  require("passport-local-mongoose");
 const User                  =  require("./models/users");
+const Message               =  require("./models/messages");
 
-
+// app.set('views', __dirname);
 
 
 app.use(express.static(__dirname + '/public'));
@@ -21,7 +22,7 @@ app.use(express.static(__dirname + '/public'));
 //In app.js
 mongoose.connect("mongodb://localhost/ChatAdmin");
 app.use(require("express-session")({
-secret:"annu@Poddar",//decode or encode session
+secret:"ast+@snu",//decode or encode session
     resave: false,          
     saveUninitialized:false    
 }));
@@ -35,14 +36,31 @@ io.on('connection', (socket) => {
 
 
 	socket.on('myMessage', (data) => {
-		var user_info = userInfo[data.userto];	
-		console.log(userInfo);
-		io.to(user_info).emit("ServerResponse", {msg: data.message, uname: data.username});
+        var msg = new Message({ from: data.userid, to: data.userto, message:data.message });
+        msg.save(function(err, doc) {
+          if (err) 
+          	return console.error(err);
+
+          console.log("Document inserted succussfully!");
+	      User.findById(data.userto, function(err, user) { 
+			io.to(user.socketid).emit("ServerResponse", {msg: data.message, userid: data.userid});
+	        });
+
+        });
 	})
 	
 
-	socket.on('userData', (data)=>{
-		userInfo[data.username] = data.userid;
+	socket.on('userData', (data)=>{    
+		// userInfo[data.username] = data.userid;
+        User.findByIdAndUpdate(data.userid, { socketid: data.socketid }, 
+        function (err, docs) {
+        if (err){
+            console.log(err)
+        }
+        else{
+            console.log("Updated User : ", docs);
+        }
+    });
 	})
 
 });
@@ -67,13 +85,13 @@ app.get("/", (req,res) =>{
     res.render("home");
 })
 
-app.get("/chat", isLoggedIn, (req, res) => {
-  res.sendFile(__dirname + '/index2.html');
-});
+// app.get("/chat", isLoggedIn, (req, res) => {
+//   res.sendFile(__dirname + '/index2.html');
+// });
 
-app.get("/userprofile",isLoggedIn ,(req,res) =>{
-    res.render("userprofile");
-})
+// app.get("/userprofile",isLoggedIn ,(req,res) =>{
+//     res.render("userprofile");
+// })
 //Auth Routes
 app.get("/auth",(req,res)=>{
     if(req.isAuthenticated()){
@@ -97,7 +115,7 @@ app.get("/register",(req,res)=>{
 app.post("/register",(req,res)=>{
     
     User.register(new User(
-    	{username: req.body.username}),
+    	{username: req.body.username,email: req.body.email,mobile: req.body.mobile_no}),
     	req.body.password,function(err,user){
         if(err){
             console.log(err);
@@ -126,6 +144,19 @@ function isLoggedIn(req,res,next) {
     // console.log("hi");
 }
 
+app.get('/chat', isLoggedIn, function(req, res) {
+    // mongoose operations are asynchronous, so you need to wait 
+    User.find({}, function(err, data) {
+        // note that data is an array of objects, not a single object!
+        res.render('chat.ejs',{ practices: data, current_user: req.user});
+             // user : req.user.username,
+
+           
+            // practices: data
+        
+       
+    });
+});
 
 
 server.listen(3000, () => {

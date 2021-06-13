@@ -25,6 +25,11 @@
           
   </div>
 </div>
+<% practices.forEach(function (practice) { %>
+   <li> <%= practice.username %></li> <!-- note you defined the field as Name not name -->
+   <li> <%= practice.email %></li> <!-- note you defined the field as Name not name -->
+   <li> <%= practice.mobile %></li> <!-- note you defined the field as Name not name -->
+<% }) %>
 <script src="/socket.io/socket.io.js"></script>
 <script>
 

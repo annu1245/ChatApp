@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>my chat</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <!-- <link rel="stylesheet" type="text/css" href="/style.css" media="all"> -->
+  <!-- <link href="styles.css" type="text/css"> -->
+  <link rel="stylesheet" type="text/css" href="css/style.css" />
+
+</head>
+<body>
+  
+<div class="container">
+    <div class="box1">
+      <h3>Start Chatting</h3>
+      <% for(var i=0; i < practices.length; i++) { %>
+        <%if (practices[i].username != current_user.username) { %>
+        <div class="frd">
+          <p class="users" user_id="<%= practices[i]._id %>"><%= practices[i].username %></p>
+        </div>
+        <% } %>   
+      <% } %>
+    </div>
+
+	<div class="box">
+		<div class="input-class">
+			<input id="input" type="text" name="text" >
+			<button id="sendBtn" onclick="sendMessage();">send</button>
+		</div>
+    <div id="para"> </div>
+          
+  </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+
+  var userto_id;
+
+  $( ".users" ).on( "click", function() {
+    userto_id =  $( this ).attr("user_id");
+    alert(userto_id);
+  });
+
+
+  // var url_string = window.location.href;
+  // var url = new URL(url_string);
+  // var username = url.searchParams.get("username");
+  // var userto = url.searchParams.get("userto");
+  // console.log(username);
+  // console.log(userto);
+  
+  var socket = io();
+
+  
+
+
+  socket.on("connect", () => {              //on => data recive  emit=>data send
+    console.log(socket.id); 
+    userInfo = {"userid" : "<%=current_user._id%>", "socketid": socket.id}
+    socket.emit("userData", userInfo);
+  });
+  
+
+  socket.on("ServerResponse", (data) => {
+    if(data.userid == "<%=current_user._id%>"){
+      serverReply = data.msg;
+      var ptag = document.getElementById('para');
+      var spantag = document.createElement('span');
+      spantag.innerHTML = serverReply;
+      ptag.appendChild(spantag);
+      ptag.appendChild(document.createElement('br'));
+      spantag.classList.add("speech-bubble");
+      ptag.scrollTop = ptag.scrollHeight;
+    }
+  });
+
+  function sendData() {
+    socket.emit("testData", {"name": "ANNU"});
+  }
+
+  function reciveData(){
+    console.log("hi")
+    socket.emit("resData", {"mydata": "Result"});
+  }
+
+  function newData() {
+    socket.emit("newData", {"ndata": "test"});
+  }
+
+  function sendMessage(){
+      msg = document.getElementById("input").value;
+      var ptag = document.getElementById('para');
+      var spantag = document.createElement('span');
+      spantag.classList.add("speech-bubble2");
+      spantag.innerHTML = msg;
+      ptag.appendChild(spantag);
+      ptag.appendChild(document.createElement('br'));
+      ptag.scrollTop = ptag.scrollHeight;
+      socket.emit("myMessage", {"message": msg, "userid": "<%= current_user._id%>", "userto": userto_id});
+  }
+</script>
+
+<script type="text/javascript">
+
+  var input = document.getElementById("input");
+  input.addEventListener("keyup", function(event) {
+    if (event.keyCode === 13 && input.value.length > 0) {
+     event.preventDefault();
+    document.getElementById("sendBtn").click();
+    input.value = '';
+    }
+  });
+</script>
+
+
+</body>
+</html>
