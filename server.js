@@ -62,6 +62,39 @@ io.on('connection', (socket) => {
         }
     });
 	})
+	
+	// socket.on('fetchMsg',(data)=>{
+ //        Message.find({}, function(err, allmsg){
+ //            socket.emit("sr",{dd:data});
+ //        });
+ //    })
+
+socket.on('fetchMsg',(data)=>{
+    console.log(data.user);
+    console.log(data.userto);
+    Message.find({
+    $or: [
+        {
+        $and: [
+              { from: data.user },
+              { to: data.userto },
+            ],
+        },
+        { 
+        $and: [
+              { from: data.userto },
+              { to: data.user },
+            ],
+        },
+    ]
+    }, null,{ sort:{ time: 'asc' } }, 
+
+    function(err,allmsg){
+    console.log(allmsg);
+    socket.emit("sr", {rep: allmsg});
+    })  
+})
+
 
 });
 
@@ -147,14 +180,7 @@ function isLoggedIn(req,res,next) {
 app.get('/chat', isLoggedIn, function(req, res) {
     // mongoose operations are asynchronous, so you need to wait 
     User.find({}, function(err, data) {
-        // note that data is an array of objects, not a single object!
         res.render('chat.ejs',{ practices: data, current_user: req.user});
-             // user : req.user.username,
-
-           
-            // practices: data
-        
-       
     });
 });
 

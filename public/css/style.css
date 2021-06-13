@@ -43,6 +43,12 @@ justify-content: center;
 align-items: center;
 }
 
+.userto{
+  height: 5%;
+  width: 100%;
+  background-color: yellow;
+}
+
 .scrollbar{
   
   overflow-y: scroll;
@@ -140,14 +146,13 @@ span{
 
 .speech-bubble, .speech-bubble2 {
   position: relative;
+  clear: both;
   background: #00aabb;
   border-radius: .4em;
 }
 .speech-bubble2{
-  clear: both;
   float: right;
   background:#FC427B;
-
 }
 
 .speech-bubble:after , .speech-bubble2:after{

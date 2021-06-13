@@ -26,7 +26,8 @@
       <% } %>
     </div>
 
-	<div class="box">
+	<div class="box" id="box">
+      <div class="userto"><p id="userto_ptag"></p></div>
 		<div class="input-class">
 			<input id="input" type="text" name="text" >
 			<button id="sendBtn" onclick="sendMessage();">send</button>
@@ -41,10 +42,7 @@
 
   var userto_id;
 
-  $( ".users" ).on( "click", function() {
-    userto_id =  $( this ).attr("user_id");
-    alert(userto_id);
-  });
+
 
 
   // var url_string = window.location.href;
@@ -64,10 +62,50 @@
     userInfo = {"userid" : "<%=current_user._id%>", "socketid": socket.id}
     socket.emit("userData", userInfo);
   });
+
+  $( ".users" ).on( "click", function() {
+    userto_id =  $( this ).attr("user_id");
+    userto_name =  $( this ).text();
+    $("#userto_ptag").html(`from <b><%=current_user.username%></b> <br> to <b>${userto_name}</b>`);
+    socket.emit("fetchMsg",{user: "<%=current_user._id%>", userto:userto_id});
+  });
+
+  socket.on("sr",(data)=>{
+    var reply = data.rep;
+    console.log(reply);
+    var ptag = document.getElementById('para');
+    var spantag;
+    ptag.innerHTML = "";
+    for(var i=0; i<reply.length; i++){
+
+      if (reply[i].from == userto_id){                       
+        ptag = document.getElementById('para');                                    
+        spantag = document.createElement('span');                                      
+        spantag.innerHTML = reply[i].message;
+        ptag.appendChild(spantag);
+        spantag.classList.add("speech-bubble");
+        ptag.appendChild(document.createElement('br'));
+        ptag.scrollTop = ptag.scrollHeight;
+    }
+    else{
+      ptag = document.getElementById('para');
+      spantag = document.createElement('span');
+      spantag.innerHTML = reply[i].message;
+      ptag.appendChild(spantag);
+      spantag.classList.add("speech-bubble2");
+      ptag.appendChild(document.createElement('br'));
+      ptag.scrollTop = ptag.scrollHeight;
+    }
+
+
+    }
+  // ptag.innerHTML = "";
+    // console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$44");
+  })
+  
   
 
   socket.on("ServerResponse", (data) => {
-    if(data.userid == "<%=current_user._id%>"){
       serverReply = data.msg;
       var ptag = document.getElementById('para');
       var spantag = document.createElement('span');
@@ -76,21 +114,7 @@
       ptag.appendChild(document.createElement('br'));
       spantag.classList.add("speech-bubble");
       ptag.scrollTop = ptag.scrollHeight;
-    }
   });
-
-  function sendData() {
-    socket.emit("testData", {"name": "ANNU"});
-  }
-
-  function reciveData(){
-    console.log("hi")
-    socket.emit("resData", {"mydata": "Result"});
-  }
-
-  function newData() {
-    socket.emit("newData", {"ndata": "test"});
-  }
 
   function sendMessage(){
       msg = document.getElementById("input").value;
@@ -101,7 +125,7 @@
       ptag.appendChild(spantag);
       ptag.appendChild(document.createElement('br'));
       ptag.scrollTop = ptag.scrollHeight;
-      socket.emit("myMessage", {"message": msg, "userid": "<%= current_user._id%>", "userto": userto_id});
+    socket.emit("myMessage", {"message": msg, "userid": "<%= current_user._id%>", "userto": userto_id});
   }
 </script>
 
