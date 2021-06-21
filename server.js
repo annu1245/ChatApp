@@ -6,6 +6,9 @@ const { Server } = require("socket.io");
 const io = new Server(server);
 var userInfo = {};
 const mongoose = require("mongoose");
+const multer = require("multer");
+var path = require('path');
+const fileUpload = require('express-fileupload');
 
 const passport              =  require("passport");
 const bodyParser            =  require("body-parser");
@@ -27,12 +30,18 @@ secret:"ast+@snu",//decode or encode session
     saveUninitialized:false    
 }));
 
-io.on('connection', (socket) => {
+    io.on('connection', (socket) => {
 	console.log('a user connected ' + socket.id);
 	
 	socket.on('disconnect', (data) => {
-	  console.log('a user disconnected ' + socket.id);
+	console.log('a user disconnected ' + socket.id);
+    var time = new Date();
+    User.findOneAndUpdate({socketid: socket.id},{status: time},null, function(err,res){
+        console.log(res);
+    })
 	});
+
+    
 
 
 	socket.on('myMessage', (data) => {
@@ -43,7 +52,7 @@ io.on('connection', (socket) => {
 
           console.log("Document inserted succussfully!");
 	      User.findById(data.userto, function(err, user) { 
-			io.to(user.socketid).emit("ServerResponse", {msg: data.message, userid: data.userid});
+			io.to(user.socketid).emit("ServerResponse", {msg: data.message, userid: data.userid, time:data.time});
 	        });
 
         });
@@ -52,7 +61,7 @@ io.on('connection', (socket) => {
 
 	socket.on('userData', (data)=>{    
 		// userInfo[data.username] = data.userid;
-        User.findByIdAndUpdate(data.userid, { socketid: data.socketid }, 
+        User.findByIdAndUpdate(data.userid, { socketid: data.socketid, status:"online" }, 
         function (err, docs) {
         if (err){
             console.log(err)
@@ -61,6 +70,8 @@ io.on('connection', (socket) => {
             console.log("Updated User : ", docs);
         }
     });
+
+        io.emit("userConnected", {userid: data.userid})
 	})
 	
 	// socket.on('fetchMsg',(data)=>{
@@ -68,10 +79,16 @@ io.on('connection', (socket) => {
  //            socket.emit("sr",{dd:data});
  //        });
  //    })
-
+var sts;
+var img;
 socket.on('fetchMsg',(data)=>{
     console.log(data.user);
     console.log(data.userto);
+    User.findById(data.userto, function(err,res){
+        sts = res.status;
+        img = res.image;
+
+    })
     Message.find({
     $or: [
         {
@@ -91,7 +108,7 @@ socket.on('fetchMsg',(data)=>{
 
     function(err,allmsg){
     console.log(allmsg);
-    socket.emit("sr", {rep: allmsg});
+    socket.emit("AllMessages", {rep: allmsg, status:sts, image:img});
     })  
 })
 
@@ -107,7 +124,10 @@ passport.use(new LocalStrategy(User.authenticate()));
 app.set("view engine","ejs");
 app.use(bodyParser.urlencoded(
       { extended:true }
-))
+));
+app.use(bodyParser.json());
+app.use(fileUpload());
+
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -145,26 +165,52 @@ app.get("/register",(req,res)=>{
     res.render("register");
 });
 
-app.post("/register",(req,res)=>{
-    
+
+// var Storage = multer.diskStorage({
+//     destination : "./public/users_img",
+//     filename:(req, file, cb)=>{
+//         cb(null, file.fieldname+"_"+Date.now()+path.extname(file.originalname))
+//     }
+// });
+
+// var upload = multer({
+//     storage:Storage
+// }).single('file');
+
+app.post("/register", (req,res)=>{
+
+    user_image = req.files.userimg;
+      
+    uploadPath = path.join(__dirname, "public", "users_img",  user_image.name);
+
+    user_image.mv(uploadPath, function(err) {
+        if (err)
+            return res.status(500).send("err");
+        });
+
+    imagePath = path.join("users_img", user_image.name);
+
     User.register(new User(
-    	{username: req.body.username,email: req.body.email,mobile: req.body.mobile_no}),
+    	{username: req.body.username,
+            email: req.body.email,
+            mobile: req.body.mobile_no,
+            image: imagePath}),
     	req.body.password,function(err,user){
         if(err){
             console.log(err);
-            res.render('login', {"status": 1});
+            return res.render('login', {"status": 1});
             // res.redirect("/auth");
             
         }
     passport.authenticate("local")(req,res,function(){
-        res.redirect("/auth");
+        return res.redirect("/auth");
     })    
     })
 })
 
 app.get("/logout",(req,res)=>{
     req.logout();
-    res.redirect("/");
+    res.redirect("/auth");
 });
 
 function isLoggedIn(req,res,next) {
@@ -180,7 +226,7 @@ function isLoggedIn(req,res,next) {
 app.get('/chat', isLoggedIn, function(req, res) {
     // mongoose operations are asynchronous, so you need to wait 
     User.find({}, function(err, data) {
-        res.render('chat.ejs',{ practices: data, current_user: req.user});
+        res.render('chat2.ejs',{ practices: data, current_user: req.user});
     });
 });
 

@@ -1,0 +1,440 @@
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!------ Include the above in your HEAD tag ---------->
+
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<!------ Include the above in your HEAD tag ---------->
+
+
+<!DOCTYPE html><html class=''>
+<head>
+  <link rel="stylesheet" type="text/css" href="css/chat.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700,300' rel='stylesheet' type='text/css'>
+
+
+<script src="https://use.typekit.net/hoy3lrg.js"></script>
+<script>try{Typekit.load({ async: true });}catch(e){}</script>
+<link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css'><link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.2/css/font-awesome.min.css'>
+<style class="cp-pen-styles"> </style>
+
+
+
+</head><body>
+
+<!--
+A concept for a chat interface. 
+
+Try writing a new message! :)
+
+
+Follow me here:
+Twitter: https://twitter.com/thatguyemil
+Codepen: https://codepen.io/emilcarlsson/
+Website: http://emilcarlsson.se/
+
+-->
+
+<div id="frame">
+	<div id="sidepanel">
+		<div id="profile">
+			<div class="wrap">
+				<img id="profile-img" src="http://emilcarlsson.se/assets/mikeross.png" class="online" alt="" />
+				<p>Mike Ross</p>
+				<i class="fa fa-chevron-down expand-button" aria-hidden="true"></i>
+				<div id="status-options">
+					<ul>
+						<li id="status-online" class="active"><span class="status-circle"></span> <p>Online</p></li>
+						<li id="status-away"><span class="status-circle"></span> <p>Away</p></li>
+						<li id="status-busy"><span class="status-circle"></span> <p>Busy</p></li>
+						<li id="status-offline"><span class="status-circle"></span> <p>Offline</p></li>
+					</ul>
+				</div>
+				<div id="expanded">
+					<label for="twitter"><i class="fa fa-facebook fa-fw" aria-hidden="true"></i></label>
+					<input name="twitter" type="text" value="mikeross" />
+					<label for="twitter"><i class="fa fa-twitter fa-fw" aria-hidden="true"></i></label>
+					<input name="twitter" type="text" value="ross81" />
+					<label for="twitter"><i class="fa fa-instagram fa-fw" aria-hidden="true"></i></label>
+					<input name="twitter" type="text" value="mike.ross" />
+				</div>
+			</div>
+		</div>
+		<div id="search">
+			<label for=""><i class="fa fa-search" aria-hidden="true"></i></label>
+			<input type="text" placeholder="Search contacts..." />
+		</div>
+		<div id="contacts">
+		<ul>
+			<% for(var i=0; i < practices.length; i++) { %>
+    		<%if (practices[i].username != current_user.username) { %>
+			<li class="contact" user_id="<%= practices[i]._id %>" >
+				<div class="wrap">											
+					<span class="contact-status online"></span>
+              <%if (practices[i].image) {%>
+              <img src="<%= practices[i].image%>" alt="" />
+
+              <% } else{ %>  
+              <i class="fas fa-user-circle fa-2x"></i>
+              <%}%>
+
+          
+					<div class="meta">
+						<p class="name"><%= practices[i].username %></p>
+						<p class="preview"> </p>
+					</div>
+				</div>
+			</li>
+			 <% } %>   
+  		<% } %>
+			
+		</ul>
+		</div>
+		<div id="bottom-bar">
+			<button id="addcontact"><i class="fa fa-user-plus fa-fw" aria-hidden="true"></i> <span>Add contact</span></button>
+			<button id="settings"><i class="fa fa-cog fa-fw" aria-hidden="true"></i> <span>Settings</span></button>
+		</div>
+	</div>
+	<div class="content">
+
+		<div class="contact-profile">
+			<img src="http://emilcarlsson.se/assets/harveyspecter.png" alt="" />
+			<p> </p>
+      <span></span>
+			<div class="social-media">
+        <a href="/logout">logout</a>
+				<i class="fa fa-facebook" aria-hidden="true"></i>
+				<i class="fa fa-twitter" aria-hidden="true"></i>
+				<i class="fa fa-instagram" aria-hidden="true"></i>
+			</div>
+		</div>
+
+		<div class="messages">
+			<ul>
+				<li class="sent">
+					<!-- <img src="http://emilcarlsson.se/assets/mikeross.png" alt="" />
+					<p>
+					How the hell am I supposed to get a jury to believe you when I am not even sure that I do?!</p> -->
+				</li>
+
+				<li class="replies">
+				<!-- 	<img src="http://emilcarlsson.se/assets/harveyspecter.png" alt="" />
+					<p>When you're backed against the wall, break the god damn thing down.</p> -->
+				</li>
+
+			</ul>
+		</div>
+		<div class="message-input">
+			<div class="wrap">
+			<input type="text" placeholder="Write your message..." />
+			<i class="fa fa-paperclip attachment" aria-hidden="true"></i>
+			<button class="submit"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<script type="text/javascript" src="js/chat.js"></script>
+
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+
+  var userto_id;
+  
+  var socket = io();
+
+  socket.on("connect", () => {              //on => data recive  emit=>data send
+    console.log(socket.id); 
+    userInfo = {"userid" : "<%=current_user._id%>", "socketid": socket.id}
+    socket.emit("userData", userInfo);
+    $("#profile").find("img").attr("src","<%=current_user.image%>");
+    $("#profile").find("p").html(`<%=current_user.username%>`);
+    $(".message-input").hide();
+    $(".contact-profile").hide();
+
+    // var msg_box = document.getElementById("msg_box");
+    // msg_box.style.display = "none";
+  });
+
+//onclick
+  $( ".contact" ).on( "click", function() {
+  	$( this ).addClass("active").siblings().removeClass('active');;
+    userto_id =  $( this ).attr("user_id");
+    userto_name =  $( this ).find(".name").text();
+    userto_img = $(this).find("img").attr("src");
+    $(".contact-profile").show();
+
+    $(".message-input").show();
+    $(".contact-profile").find("img").attr("src", userto_img);
+    $(".contact-profile").find("p").html(`${userto_name}`);
+    $("#profile").find("p").html(`<%=current_user.username%>`);
+    socket.emit("fetchMsg",{user: "<%=current_user._id%>", userto:userto_id});
+  });
+
+
+function convertTime(time){
+  var newTime;
+  var hours = time.getHours();
+  var minutes = time.getMinutes();
+  if (hours >=12){
+    newTime = hours % 12 || 12;
+    return (`${newTime}:${minutes} PM`);
+  } 
+  else{
+      return (`${hours}:${minutes} AM`);
+    }
+
+}
+
+var para ;
+var msg_div;
+var msgSpan ;
+var msgTime ;
+var rightDiv;
+
+
+  // socket.on("AllMessages",(data)=>{
+  //   var last_seen = data.status;
+
+  //   if (last_seen != "online"){
+  //     var time = new Date(last_seen);
+  //     last_seen = convertTime(time);
+  //     last_seen = (`last seen at : ${last_seen}`)
+  //   }
+
+  //   if (data.status === undefined){
+  //     document.getElementById('status').innerHTML = "offline";
+  //   }
+  //   else{
+  //     document.getElementById('status').innerHTML = last_seen;
+  //   }
+  //   var reply = data.rep;
+  //   var ptag = document.getElementById('para');
+  //   var spantag, divtag;
+  //   ptag.innerHTML = "";
+
+     
+
+  //   for(var i=0; i<reply.length; i++){
+
+  //      var time = new Date(reply[i].time);
+  //      new_time = convertTime(time);
+  //      // var new_time = (`${time.getHours()}:${time.getMinutes()} `);
+
+  //      para = document.getElementById('para');
+  //      msg_div = document.createElement('div');
+  //      msgSpan = document.createElement('span');
+  //      msgTime = document.createElement('span');
+  //      rightDiv = document.createElement('div');
+
+  //     if (reply[i].from == userto_id){ 
+       
+
+  //      msgSpan.innerHTML = reply[i].message;
+  //      msg_div.appendChild(msgSpan);
+
+  //      msgTime.innerHTML = new_time;
+  //      msgTime.classList.add("span_time");
+  //      msg_div.appendChild(msgTime);
+       
+  //      msg_div.classList.add("speech-bubble");
+  //      para.appendChild(msg_div);
+
+  //      para.appendChild(document.createElement('br'));
+  //      para.scrollTop = para.scrollHeight;
+
+  //   }
+  //   else{
+     
+  //      rightDiv.classList.add("shiftRight");
+  //      msgSpan.innerHTML = reply[i].message;
+  //      msg_div.appendChild(msgSpan);
+
+  //      msgTime.innerHTML = new_time;
+  //      msgTime.classList.add("span_time");
+  //      msg_div.appendChild(msgTime);
+       
+  //      msg_div.classList.add("speech-bubble2");
+  //      rightDiv.appendChild(msg_div);
+  //      para.appendChild(rightDiv);
+
+  //      para.appendChild(document.createElement('br'));
+  //      para.scrollTop = para.scrollHeight;
+
+  //   }
+  //   }
+  // })
+  
+  
+
+  // socket.on("ServerResponse", (data) => {
+  //     time = new Date();
+  //     new_time = convertTime(time);
+  //     serverReply = data.msg;
+
+  //      para = document.getElementById('para');
+  //      msg_div = document.createElement('div');
+  //      msgSpan = document.createElement('span');
+  //      msgTime = document.createElement('span');
+
+  //      msgSpan.innerHTML = serverReply;
+  //      msg_div.appendChild(msgSpan);
+
+  //      msgTime.innerHTML = new_time;
+  //      msgTime.classList.add("span_time");
+  //      msg_div.appendChild(msgTime);
+       
+  //      msg_div.classList.add("speech-bubble");
+  //      para.appendChild(msg_div);
+
+  //      para.appendChild(document.createElement('br'));
+  //      para.scrollTop = para.scrollHeight;
+
+
+  // });
+
+
+  // function sendMessage(){
+  //     msg = document.getElementById("input").value;
+  //     time = new Date();
+  //     new_time = convertTime(time);
+
+
+  //      para = document.getElementById('para');
+  //      msg_div = document.createElement('div');
+  //      msgSpan = document.createElement('span');
+  //      msgTime = document.createElement('span');
+  //      rightDiv = document.createElement('div');
+
+  //      rightDiv.classList.add("shiftRight");
+  //      msgSpan.innerHTML = msg;
+  //      msg_div.appendChild(msgSpan);
+
+  //      msgTime.innerHTML = new_time;
+  //      msgTime.classList.add("span_time");
+  //      msg_div.appendChild(msgTime);
+       
+  //      msg_div.classList.add("speech-bubble2");
+  //      rightDiv.appendChild(msg_div);
+  //      para.appendChild(rightDiv);
+
+  //      para.appendChild(document.createElement('br'));
+  //      para.scrollTop = para.scrollHeight;
+  //   socket.emit("myMessage", {"message": msg, "userid": "<%= current_user._id%>", "userto": userto_id});
+  // }
+
+// function sendMessage(reply){
+
+// }
+
+socket.on("AllMessages", (data)=>{
+   var last_seen = data.status;
+	var reply = data.rep;
+
+
+    if (last_seen != "online"){
+      time = new Date(last_seen);
+      last_seen = convertTime(time);
+      last_seen = (`last seen at : ${last_seen}`)
+      $(".contact-profile").find("span").html(`${last_seen}`);
+
+    }
+
+    if(last_seen == "online"){
+      $(".contact-profile").find("span").html(`${last_seen}`);
+
+    }
+
+    if (data.status === undefined){
+    $(".contact-profile").find("span").html("offline");
+
+    }
+
+    
+
+  $(".messages ul").html("");             
+  for(var i=0; i<reply.length; i++){
+
+  time = new Date(reply[i].time);
+  new_time = convertTime(time);
+	
+	if (reply[i].from == userto_id){ 
+    message = reply[i].message;
+
+    	if($.trim(message) == '') {
+    		return false;
+    	}
+
+
+	$(`<li class="replies"><img src="${userto_img}" alt="" /><p>  ${message} </p><span> ${new_time} </span></li>`).appendTo($('.messages ul'));
+		// $('.message-input input').val(null);
+		$('.contact.active .preview').html('<span>You: </span>' + message);
+		
+  }
+
+  else{
+    message = reply[i].message;
+    if($.trim(message) == '') {
+      return false;
+    }
+
+  $('<li class="sent"><img src="<%=current_user.image%>" alt="" /><p>' + message + '</p><span>' + new_time + '</span></li>').appendTo($('.messages ul'));
+  // $('<li class="replies"><span>hello</span><br><img src="http://emilcarlsson.se/assets/mikeross.png" alt="" /><p>' + message + '</p></li>').appendTo($('.messages ul'));
+  $('.contact.active .preview').html('<span>from: </span>' + message);
+  
+  }
+}
+  height = document.getElementsByClassName("messages")[0].scrollHeight;
+  $(".messages").animate({ scrollTop: height }, "fast");
+})
+
+socket.on("ServerResponse", (data)=>{
+ message = data.msg;
+ alert(message);
+  if($.trim(message) == '') {
+    return false;
+  }
+  $('<li class="replies"><img src="http://emilcarlsson.se/assets/mikeross.png" alt="" /><p>' + message + '</p><span>' + data.time + '</span></li>').appendTo($('.messages ul'));
+  $('.contact.active .preview').html('<span>from: </span>' + message);
+  height = document.getElementsByClassName("messages")[0].scrollHeight;
+  $(".messages").animate({ scrollTop: height }, "slow");
+})
+
+
+
+ function newMessage() {
+	message = $(".message-input input").val();
+	if($.trim(message) == '') {
+		return false;
+	}
+  time = new Date();
+  new_time = convertTime(time);
+	$('<li class="sent"><img src="http://emilcarlsson.se/assets/mikeross.png" alt="" /><p>' + message + '</p><span>' + new_time + '</span></li>').appendTo($('.messages ul'));
+	$('.message-input input').val(null);
+	$('.contact.active .preview').html('<span>You: </span>' + message);
+  height = document.getElementsByClassName("messages")[0].scrollHeight;
+	$(".messages").animate({ scrollTop: height }, "fast");
+    socket.emit("myMessage", {"message": message, "userid": "<%= current_user._id%>", "userto": userto_id, "time":new_time});
+	
+};
+
+$('.submit').click(function() {
+  newMessage();
+});
+
+$(window).on('keydown', function(e) {
+  if (e.which == 13) {
+    newMessage();
+    return false;
+  }
+});
+</script>
+
+
+</body></html>

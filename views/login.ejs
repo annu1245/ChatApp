@@ -21,11 +21,12 @@
 	</form>
 	</div>
 	<div class="mid_div_register" id="register">
-        <form action="/register" method="POST">
+        <form action="/register" method="POST" encType="multipart/form-data">
         <input type="text" id="username" name="username" placeholder="username" autocomplete="off">
         <input type="Email" id="email" name="email" placeholder="email" autocomplete="off">
         <input type="password" id="password" name="password" placeholder="password" autocomplete="off">
         <input type="number" id="mobile_no" name="mobile_no" placeholder="mobile_number" autocomplete="off">
+        <input type="file" id="userimg_id" name="userimg">
         <button class="btn1">Submit</button>
         </form>
     </div>

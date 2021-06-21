@@ -9,9 +9,12 @@
   		height: 100vh;
       width: 60%;
       left: 33%;
+      /*padding-left: 10px;*/
       background-color: #ffffff;
       box-shadow: 0 0 20px #747d8c;
       position: relative;
+      /*text-align: right;*/
+
   	}
 
 .box1{
@@ -76,9 +79,8 @@ align-items: center;
 /* Optional: show position indicator in red */
 
   	
-  	.input-class{
-      font-size: 2vh;
-  /*overflow: hidden;*/
+.input-class{
+    font-size: 2vh;
     border-radius: 50px;
     border: none;
     position:absolute;
@@ -86,12 +88,7 @@ align-items: center;
     bottom:1%;
     width:98%;
     height: 5%;
-    /*background-color:white;
-    color:grey;
-    border-radius: 50px;
-	font-size: 1.3vw;
-	color:black;*/
-box-shadow: 0 0 10px purple;
+    box-shadow: 0 0 10px purple;
 }
 .input-class input[type=text]{
   position: relative;
@@ -127,31 +124,39 @@ button:focus{
 }
 
 span{
-  position: relative;
-  left: 1%;
-  margin-right: 18px;
-  padding: 0.8%;
-  top: 20px;
-  font-size: 2vh;
-  display: inline-block;
-  margin-top: 10px;
+  padding: 15px;
+  font-size: 1.2em;
 }
+
 #para{
   height: 85%;
   overflow-y:scroll;
-  /*display: flex;*/
-  /*justify-content: space-between; */
+}
+
+
+
+.shiftRight {
+ text-align: right;
+ margin-bottom: -9px;
+ margin-top: -10px;
+}
+
+.span_time {
+  font-size: 0.8em;
 }
 
 
 .speech-bubble, .speech-bubble2 {
-  position: relative;
   clear: both;
   background: #00aabb;
-  border-radius: .4em;
+  border-radius: 0.4em;
+  margin: 10px;
+  display: inline-block;
+  position: relative;
 }
+
+
 .speech-bubble2{
-  float: right;
   background:#FC427B;
 }
 

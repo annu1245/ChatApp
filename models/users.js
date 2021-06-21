@@ -7,6 +7,8 @@ const UserSchema = new mongoose.Schema({
     mobile:String,
     password:String,
     socketid:String,
+    status:String,
+    image:String,
 }) ;
 UserSchema.plugin(passportLocalMongoose);
 module.exports = mongoose.model("User",UserSchema);

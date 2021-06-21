@@ -2,11 +2,13 @@
 <html lang="en">
 <head>
   <title>my chat</title>
-  <meta charset="utf-8">
+  <%- include('./layouts/head'); %>
+
+  <!-- <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
   <!-- <link rel="stylesheet" type="text/css" href="/style.css" media="all"> -->
   <!-- <link href="styles.css" type="text/css"> -->
   <link rel="stylesheet" type="text/css" href="css/style.css" />
@@ -27,9 +29,12 @@
     </div>
 
 	<div class="box" id="box">
-      <div class="userto"><p id="userto_ptag"></p></div>
-		<div class="input-class">
-			<input id="input" type="text" name="text" >
+      <div class="userto">
+        <p id="userto_ptag"></p>
+      </div>
+    <div class="shiftRight"><p id="status" style="background-color: cyan;"></p></div>
+		<div class="input-class" id="msg_box">
+			<input id="input" type="text" name="text">
 			<button id="sendBtn" onclick="sendMessage();">send</button>
 		</div>
     <div id="para"> </div>
@@ -41,93 +46,179 @@
 <script>
 
   var userto_id;
-
-
-
-
-  // var url_string = window.location.href;
-  // var url = new URL(url_string);
-  // var username = url.searchParams.get("username");
-  // var userto = url.searchParams.get("userto");
-  // console.log(username);
-  // console.log(userto);
   
   var socket = io();
-
-  
-
 
   socket.on("connect", () => {              //on => data recive  emit=>data send
     console.log(socket.id); 
     userInfo = {"userid" : "<%=current_user._id%>", "socketid": socket.id}
     socket.emit("userData", userInfo);
+    var msg_box = document.getElementById("msg_box");
+    msg_box.style.display = "none";
   });
 
+
   $( ".users" ).on( "click", function() {
+    msg_box.style.display = "block";
     userto_id =  $( this ).attr("user_id");
     userto_name =  $( this ).text();
     $("#userto_ptag").html(`from <b><%=current_user.username%></b> <br> to <b>${userto_name}</b>`);
     socket.emit("fetchMsg",{user: "<%=current_user._id%>", userto:userto_id});
   });
 
-  socket.on("sr",(data)=>{
-    var reply = data.rep;
-    console.log(reply);
-    var ptag = document.getElementById('para');
-    var spantag;
-    ptag.innerHTML = "";
-    for(var i=0; i<reply.length; i++){
 
-      if (reply[i].from == userto_id){                       
-        ptag = document.getElementById('para');                                    
-        spantag = document.createElement('span');                                      
-        spantag.innerHTML = reply[i].message;
-        ptag.appendChild(spantag);
-        spantag.classList.add("speech-bubble");
-        ptag.appendChild(document.createElement('br'));
-        ptag.scrollTop = ptag.scrollHeight;
+function convertTime(time){
+  var newTime;
+  var hours = time.getHours();
+  var minutes = time.getMinutes();
+  if (hours >=12){
+    newTime = hours % 12 || 12;
+    return (`${newTime}:${minutes} PM`);
+  } 
+  else{
+      return (`${hours}:${minutes} AM`);
+    }
+
+}
+
+var para ;
+var msg_div;
+var msgSpan ;
+var msgTime ;
+var rightDiv;
+
+
+  socket.on("AllMessages",(data)=>{
+    var last_seen = data.status;
+
+    if (last_seen != "online"){
+      var time = new Date(last_seen);
+      last_seen = convertTime(time);
+      last_seen = (`last seen at : ${last_seen}`)
+    }
+
+    if (data.status === undefined){
+      document.getElementById('status').innerHTML = "offline";
     }
     else{
-      ptag = document.getElementById('para');
-      spantag = document.createElement('span');
-      spantag.innerHTML = reply[i].message;
-      ptag.appendChild(spantag);
-      spantag.classList.add("speech-bubble2");
-      ptag.appendChild(document.createElement('br'));
-      ptag.scrollTop = ptag.scrollHeight;
+      document.getElementById('status').innerHTML = last_seen;
     }
+    var reply = data.rep;
+    var ptag = document.getElementById('para');
+    var spantag, divtag;
+    ptag.innerHTML = "";
 
+      
+
+    for(var i=0; i<reply.length; i++){
+
+       var time = new Date(reply[i].time);
+       new_time = convertTime(time);
+       // var new_time = (`${time.getHours()}:${time.getMinutes()} `);
+
+       para = document.getElementById('para');
+       msg_div = document.createElement('div');
+       msgSpan = document.createElement('span');
+       msgTime = document.createElement('span');
+       rightDiv = document.createElement('div');
+
+      if (reply[i].from == userto_id){ 
+       
+
+       msgSpan.innerHTML = reply[i].message;
+       msg_div.appendChild(msgSpan);
+
+       msgTime.innerHTML = new_time;
+       msgTime.classList.add("span_time");
+       msg_div.appendChild(msgTime);
+       
+       msg_div.classList.add("speech-bubble");
+       para.appendChild(msg_div);
+
+       para.appendChild(document.createElement('br'));
+       para.scrollTop = para.scrollHeight;
 
     }
-  // ptag.innerHTML = "";
-    // console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$44");
+    else{
+     
+       rightDiv.classList.add("shiftRight");
+       msgSpan.innerHTML = reply[i].message;
+       msg_div.appendChild(msgSpan);
+
+       msgTime.innerHTML = new_time;
+       msgTime.classList.add("span_time");
+       msg_div.appendChild(msgTime);
+       
+       msg_div.classList.add("speech-bubble2");
+       rightDiv.appendChild(msg_div);
+       para.appendChild(rightDiv);
+
+       para.appendChild(document.createElement('br'));
+       para.scrollTop = para.scrollHeight;
+
+    }  
+    }
   })
   
   
 
   socket.on("ServerResponse", (data) => {
+      time = new Date();
+      new_time = convertTime(time);
       serverReply = data.msg;
-      var ptag = document.getElementById('para');
-      var spantag = document.createElement('span');
-      spantag.innerHTML = serverReply;
-      ptag.appendChild(spantag);
-      ptag.appendChild(document.createElement('br'));
-      spantag.classList.add("speech-bubble");
-      ptag.scrollTop = ptag.scrollHeight;
+
+       para = document.getElementById('para');
+       msg_div = document.createElement('div');
+       msgSpan = document.createElement('span');
+       msgTime = document.createElement('span');
+
+       msgSpan.innerHTML = serverReply;
+       msg_div.appendChild(msgSpan);
+
+       msgTime.innerHTML = new_time;
+       msgTime.classList.add("span_time");
+       msg_div.appendChild(msgTime);
+       
+       msg_div.classList.add("speech-bubble");
+       para.appendChild(msg_div);
+
+       para.appendChild(document.createElement('br'));
+       para.scrollTop = para.scrollHeight;
+
+
   });
 
   function sendMessage(){
       msg = document.getElementById("input").value;
-      var ptag = document.getElementById('para');
-      var spantag = document.createElement('span');
-      spantag.classList.add("speech-bubble2");
-      spantag.innerHTML = msg;
-      ptag.appendChild(spantag);
-      ptag.appendChild(document.createElement('br'));
-      ptag.scrollTop = ptag.scrollHeight;
+      time = new Date();
+      new_time = convertTime(time);
+
+
+       para = document.getElementById('para');
+       msg_div = document.createElement('div');
+       msgSpan = document.createElement('span');
+       msgTime = document.createElement('span');
+       rightDiv = document.createElement('div');
+
+       rightDiv.classList.add("shiftRight");
+       msgSpan.innerHTML = msg;
+       msg_div.appendChild(msgSpan);
+
+       msgTime.innerHTML = new_time;
+       msgTime.classList.add("span_time");
+       msg_div.appendChild(msgTime);
+       
+       msg_div.classList.add("speech-bubble2");
+       rightDiv.appendChild(msg_div);
+       para.appendChild(rightDiv);
+
+       para.appendChild(document.createElement('br'));
+       para.scrollTop = para.scrollHeight;
     socket.emit("myMessage", {"message": msg, "userid": "<%= current_user._id%>", "userto": userto_id});
   }
 </script>
+
+
 
 <script type="text/javascript">
 
