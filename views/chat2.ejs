@@ -1,4 +1,9 @@
-<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+
+
+
+<!DOCTYPE html><html class=''>
+<head>
+  <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <!------ Include the above in your HEAD tag ---------->
@@ -7,10 +12,6 @@
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
 <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
 <!------ Include the above in your HEAD tag ---------->
-
-
-<!DOCTYPE html><html class=''>
-<head>
   <link rel="stylesheet" type="text/css" href="css/chat.css" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
@@ -26,18 +27,6 @@
 
 </head><body>
 
-<!--
-A concept for a chat interface. 
-
-Try writing a new message! :)
-
-
-Follow me here:
-Twitter: https://twitter.com/thatguyemil
-Codepen: https://codepen.io/emilcarlsson/
-Website: http://emilcarlsson.se/
-
--->
 
 <div id="frame">
 	<div id="sidepanel">
@@ -56,11 +45,11 @@ Website: http://emilcarlsson.se/
 				</div>
 				<div id="expanded">
 					<label for="twitter"><i class="fa fa-facebook fa-fw" aria-hidden="true"></i></label>
-					<input name="twitter" type="text" value="mikeross" />
+					<input name="twitter" type="text" value="mikeross" disabled/>
 					<label for="twitter"><i class="fa fa-twitter fa-fw" aria-hidden="true"></i></label>
-					<input name="twitter" type="text" value="ross81" />
+					<input name="twitter" type="text" value="ross81" disabled/>
 					<label for="twitter"><i class="fa fa-instagram fa-fw" aria-hidden="true"></i></label>
-					<input name="twitter" type="text" value="mike.ross" />
+					<input name="twitter" type="text" value="mike.ross" disabled/>
 				</div>
 			</div>
 		</div>
@@ -72,9 +61,9 @@ Website: http://emilcarlsson.se/
 		<ul>
 			<% for(var i=0; i < practices.length; i++) { %>
     		<%if (practices[i].username != current_user.username) { %>
-			<li class="contact" user_id="<%= practices[i]._id %>" >
+			<li class="contact" user_id="<%= practices[i]._id %>">
 				<div class="wrap">											
-					<span class="contact-status online"></span>
+					<!-- <span class="contact-status online"></span> -->
               <%if (practices[i].image) {%>
               <img src="<%= practices[i].image%>" alt="" />
 
@@ -82,7 +71,6 @@ Website: http://emilcarlsson.se/
               <i class="fas fa-user-circle fa-2x"></i>
               <%}%>
 
-          
 					<div class="meta">
 						<p class="name"><%= practices[i].username %></p>
 						<p class="preview"> </p>
@@ -107,6 +95,8 @@ Website: http://emilcarlsson.se/
       <span></span>
 			<div class="social-media">
         <a href="/logout">logout</a>
+        <i class="fa fa-check"></i>
+        <i class="fas fa-check-double"></i>
 				<i class="fa fa-facebook" aria-hidden="true"></i>
 				<i class="fa fa-twitter" aria-hidden="true"></i>
 				<i class="fa fa-instagram" aria-hidden="true"></i>
@@ -115,22 +105,15 @@ Website: http://emilcarlsson.se/
 
 		<div class="messages">
 			<ul>
-				<li class="sent">
-					<!-- <img src="http://emilcarlsson.se/assets/mikeross.png" alt="" />
-					<p>
-					How the hell am I supposed to get a jury to believe you when I am not even sure that I do?!</p> -->
-				</li>
+				<li class="sent"></li>
 
-				<li class="replies">
-				<!-- 	<img src="http://emilcarlsson.se/assets/harveyspecter.png" alt="" />
-					<p>When you're backed against the wall, break the god damn thing down.</p> -->
-				</li>
-
+				<li class="replies"></li>
 			</ul>
+
 		</div>
 		<div class="message-input">
 			<div class="wrap">
-			<input type="text" placeholder="Write your message..." />
+			<input id = "inputField" type="text" placeholder="Write your message..." />
 			<i class="fa fa-paperclip attachment" aria-hidden="true"></i>
 			<button class="submit"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
 			</div>
@@ -156,10 +139,8 @@ Website: http://emilcarlsson.se/
     $("#profile").find("img").attr("src","<%=current_user.image%>");
     $("#profile").find("p").html(`<%=current_user.username%>`);
     $(".message-input").hide();
-    $(".contact-profile").hide();
-
-    // var msg_box = document.getElementById("msg_box");
-    // msg_box.style.display = "none";
+    $(".contact-profile").find("img").hide();
+    $(".social-media").find("i").hide();
   });
 
 //onclick
@@ -168,7 +149,8 @@ Website: http://emilcarlsson.se/
     userto_id =  $( this ).attr("user_id");
     userto_name =  $( this ).find(".name").text();
     userto_img = $(this).find("img").attr("src");
-    $(".contact-profile").show();
+    $(".contact-profile").find("img").show();
+    $(".social-media").find("i").show();
 
     $(".message-input").show();
     $(".contact-profile").find("img").attr("src", userto_img);
@@ -176,6 +158,45 @@ Website: http://emilcarlsson.se/
     $("#profile").find("p").html(`<%=current_user.username%>`);
     socket.emit("fetchMsg",{user: "<%=current_user._id%>", userto:userto_id});
   });
+
+// inputField = document.getElementById("#inputField");
+// inputField.addEventListener("keyup", () => {
+//   alert(inputField.value());
+//   // socket.emit("typing", {
+//   //   isTyping: inputField.value.length > 0,
+//   //   userName: <%=current_user.username%>,
+//   // });
+// });
+var doneTypingInterval = 300;
+var typingTimer;
+
+$("#inputField").on("keyup",function(){
+  socket.emit("stoptyping", {
+    usertoid: userto_id,    
+    userid : "<%=current_user._id%>",
+  });
+})
+
+socket.on("Showtyping", function (data) { 
+  clearTimeout(typingTimer);
+  $(".contact-profile").find("span").html(`${userto_name} is typing...`);
+});
+
+$("#inputField").on('keydown', function () { 
+  socket.emit("typing", {
+    usertoid: userto_id,    
+    userid : "<%=current_user._id%>",
+  });
+}); 
+
+socket.on("stop_show_typing", function (data) { 
+  typingTimer = setTimeout(doneTyping, doneTypingInterval); 
+});
+
+function doneTyping () {
+$(".contact-profile").find("span").html("online");
+
+}
 
 
 function convertTime(time){
@@ -192,150 +213,11 @@ function convertTime(time){
 
 }
 
-var para ;
-var msg_div;
-var msgSpan ;
-var msgTime ;
-var rightDiv;
 
-
-  // socket.on("AllMessages",(data)=>{
-  //   var last_seen = data.status;
-
-  //   if (last_seen != "online"){
-  //     var time = new Date(last_seen);
-  //     last_seen = convertTime(time);
-  //     last_seen = (`last seen at : ${last_seen}`)
-  //   }
-
-  //   if (data.status === undefined){
-  //     document.getElementById('status').innerHTML = "offline";
-  //   }
-  //   else{
-  //     document.getElementById('status').innerHTML = last_seen;
-  //   }
-  //   var reply = data.rep;
-  //   var ptag = document.getElementById('para');
-  //   var spantag, divtag;
-  //   ptag.innerHTML = "";
-
-     
-
-  //   for(var i=0; i<reply.length; i++){
-
-  //      var time = new Date(reply[i].time);
-  //      new_time = convertTime(time);
-  //      // var new_time = (`${time.getHours()}:${time.getMinutes()} `);
-
-  //      para = document.getElementById('para');
-  //      msg_div = document.createElement('div');
-  //      msgSpan = document.createElement('span');
-  //      msgTime = document.createElement('span');
-  //      rightDiv = document.createElement('div');
-
-  //     if (reply[i].from == userto_id){ 
-       
-
-  //      msgSpan.innerHTML = reply[i].message;
-  //      msg_div.appendChild(msgSpan);
-
-  //      msgTime.innerHTML = new_time;
-  //      msgTime.classList.add("span_time");
-  //      msg_div.appendChild(msgTime);
-       
-  //      msg_div.classList.add("speech-bubble");
-  //      para.appendChild(msg_div);
-
-  //      para.appendChild(document.createElement('br'));
-  //      para.scrollTop = para.scrollHeight;
-
-  //   }
-  //   else{
-     
-  //      rightDiv.classList.add("shiftRight");
-  //      msgSpan.innerHTML = reply[i].message;
-  //      msg_div.appendChild(msgSpan);
-
-  //      msgTime.innerHTML = new_time;
-  //      msgTime.classList.add("span_time");
-  //      msg_div.appendChild(msgTime);
-       
-  //      msg_div.classList.add("speech-bubble2");
-  //      rightDiv.appendChild(msg_div);
-  //      para.appendChild(rightDiv);
-
-  //      para.appendChild(document.createElement('br'));
-  //      para.scrollTop = para.scrollHeight;
-
-  //   }
-  //   }
-  // })
-  
-  
-
-  // socket.on("ServerResponse", (data) => {
-  //     time = new Date();
-  //     new_time = convertTime(time);
-  //     serverReply = data.msg;
-
-  //      para = document.getElementById('para');
-  //      msg_div = document.createElement('div');
-  //      msgSpan = document.createElement('span');
-  //      msgTime = document.createElement('span');
-
-  //      msgSpan.innerHTML = serverReply;
-  //      msg_div.appendChild(msgSpan);
-
-  //      msgTime.innerHTML = new_time;
-  //      msgTime.classList.add("span_time");
-  //      msg_div.appendChild(msgTime);
-       
-  //      msg_div.classList.add("speech-bubble");
-  //      para.appendChild(msg_div);
-
-  //      para.appendChild(document.createElement('br'));
-  //      para.scrollTop = para.scrollHeight;
-
-
-  // });
-
-
-  // function sendMessage(){
-  //     msg = document.getElementById("input").value;
-  //     time = new Date();
-  //     new_time = convertTime(time);
-
-
-  //      para = document.getElementById('para');
-  //      msg_div = document.createElement('div');
-  //      msgSpan = document.createElement('span');
-  //      msgTime = document.createElement('span');
-  //      rightDiv = document.createElement('div');
-
-  //      rightDiv.classList.add("shiftRight");
-  //      msgSpan.innerHTML = msg;
-  //      msg_div.appendChild(msgSpan);
-
-  //      msgTime.innerHTML = new_time;
-  //      msgTime.classList.add("span_time");
-  //      msg_div.appendChild(msgTime);
-       
-  //      msg_div.classList.add("speech-bubble2");
-  //      rightDiv.appendChild(msg_div);
-  //      para.appendChild(rightDiv);
-
-  //      para.appendChild(document.createElement('br'));
-  //      para.scrollTop = para.scrollHeight;
-  //   socket.emit("myMessage", {"message": msg, "userid": "<%= current_user._id%>", "userto": userto_id});
-  // }
-
-// function sendMessage(reply){
-
-// }
 
 socket.on("AllMessages", (data)=>{
    var last_seen = data.status;
-	var reply = data.rep;
+	 var reply = data.rep;
 
 
     if (last_seen != "online"){
@@ -343,20 +225,15 @@ socket.on("AllMessages", (data)=>{
       last_seen = convertTime(time);
       last_seen = (`last seen at : ${last_seen}`)
       $(".contact-profile").find("span").html(`${last_seen}`);
-
     }
 
     if(last_seen == "online"){
       $(".contact-profile").find("span").html(`${last_seen}`);
-
     }
 
     if (data.status === undefined){
     $(".contact-profile").find("span").html("offline");
-
     }
-
-    
 
   $(".messages ul").html("");             
   for(var i=0; i<reply.length; i++){
@@ -371,11 +248,8 @@ socket.on("AllMessages", (data)=>{
     		return false;
     	}
 
-
-	$(`<li class="replies"><img src="${userto_img}" alt="" /><p>  ${message} </p><span> ${new_time} </span></li>`).appendTo($('.messages ul'));
-		// $('.message-input input').val(null);
+	$(`<li class="replies"><img src="${userto_img}" alt="" /><p>  ${message} </p><div><span> ${new_time} </span></li>`).appendTo($('.messages ul'));
 		$('.contact.active .preview').html('<span>You: </span>' + message);
-		
   }
 
   else{
@@ -384,8 +258,15 @@ socket.on("AllMessages", (data)=>{
       return false;
     }
 
-  $('<li class="sent"><img src="<%=current_user.image%>" alt="" /><p>' + message + '</p><span>' + new_time + '</span></li>').appendTo($('.messages ul'));
-  // $('<li class="replies"><span>hello</span><br><img src="http://emilcarlsson.se/assets/mikeross.png" alt="" /><p>' + message + '</p></li>').appendTo($('.messages ul'));
+    if (reply[i].read){
+      seen = "fas fa-check-double";  
+    }
+    else{
+      seen = "fa fa-check"; 
+    }
+
+  $('<li class="sent"><img src="<%=current_user.image%>" alt="" /><p>' + message + '</p><i class="' +seen +' '+reply[i].msgReadId '" ></i><span>' + new_time + '</span></li>').appendTo($('.messages ul')); 
+  
   $('.contact.active .preview').html('<span>from: </span>' + message);
   
   }
@@ -396,14 +277,30 @@ socket.on("AllMessages", (data)=>{
 
 socket.on("ServerResponse", (data)=>{
  message = data.msg;
- alert(message);
+ msg_id = data.msgid;
   if($.trim(message) == '') {
     return false;
   }
-  $('<li class="replies"><img src="http://emilcarlsson.se/assets/mikeross.png" alt="" /><p>' + message + '</p><span>' + data.time + '</span></li>').appendTo($('.messages ul'));
+  $(`<li class="replies"><img src="${userto_img}" alt="" /><p>${message}</p><span> ${data.time} </span></li>`).appendTo($('.messages ul'));
   $('.contact.active .preview').html('<span>from: </span>' + message);
   height = document.getElementsByClassName("messages")[0].scrollHeight;
   $(".messages").animate({ scrollTop: height }, "slow");
+
+  socket.emit("msgSeen",{"msgid":msg_id, "msgreadid":data.msgreadid, "seen":true});
+})
+
+socket.on("readMsg", (data)=>{
+  console.log(data);  
+  console.log(msg_read_id);
+  console.log(data.seen);
+  $("." + msg_read_id).attr("class", "fas fa-check-double");
+
+  // msg_id = data.msgid;
+  // massage_read_id = data.msgreadid;
+  // console.log(msg_id);
+  // console.log(message_read_id);
+  
+
 })
 
 
@@ -413,16 +310,20 @@ socket.on("ServerResponse", (data)=>{
 	if($.trim(message) == '') {
 		return false;
 	}
-  time = new Date();
+  msg_read_id = Math.random().toString(36).substr(2, 25);
+  time = new Date();  
   new_time = convertTime(time);
-	$('<li class="sent"><img src="http://emilcarlsson.se/assets/mikeross.png" alt="" /><p>' + message + '</p><span>' + new_time + '</span></li>').appendTo($('.messages ul'));
+	$('<li class="sent"><img src="<%=current_user.image%>" alt="" /><p>' + message + '</p><i class="fa fa-check ' + msg_read_id + '""></i><span>' + new_time + '</span></li>').appendTo($('.messages ul'));
+
 	$('.message-input input').val(null);
 	$('.contact.active .preview').html('<span>You: </span>' + message);
   height = document.getElementsByClassName("messages")[0].scrollHeight;
 	$(".messages").animate({ scrollTop: height }, "fast");
-    socket.emit("myMessage", {"message": message, "userid": "<%= current_user._id%>", "userto": userto_id, "time":new_time});
+    socket.emit("myMessage", {"message": message, "userid": "<%= current_user._id%>", "userto": userto_id, "time":new_time, "msgreadid": msg_read_id});       
 	
 };
+
+
 
 $('.submit').click(function() {
   newMessage();

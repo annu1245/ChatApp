@@ -15,18 +15,18 @@
 	<i class="fas fa-user-circle icon fa-4x" id="auth_logo"></i>
 	<div class="mid_div_login" id="login">
 	<form action="/login" method="POST">
-		<input type="text" placeholder="username" id="xyz" name="username" autocomplete="off">
-		<input type="password" id="password" name="password" placeholder="Password" autocomplete="off"> 
+		<input type="text" placeholder="username" id="xyz" name="username" autocomplete="off" required>
+		<input type="password" id="password" name="password" placeholder="Password" autocomplete="off" required> 
 		<button class="btn1">Log In</button>
 	</form>
 	</div>
 	<div class="mid_div_register" id="register">
         <form action="/register" method="POST" encType="multipart/form-data">
-        <input type="text" id="username" name="username" placeholder="username" autocomplete="off">
-        <input type="Email" id="email" name="email" placeholder="email" autocomplete="off">
-        <input type="password" id="password" name="password" placeholder="password" autocomplete="off">
-        <input type="number" id="mobile_no" name="mobile_no" placeholder="mobile_number" autocomplete="off">
-        <input type="file" id="userimg_id" name="userimg">
+        <input type="text" id="username" name="username" placeholder="username" autocomplete="off" required>
+        <input type="Email" id="email" name="email" placeholder="email" autocomplete="off" required>
+        <input type="password" id="password" name="password" placeholder="password" autocomplete="off" required>
+        <input type="number" id="mobile_no" name="mobile_no" placeholder="mobile_number" autocomplete="off" required>
+        <input type="file" id="userimg_id" name="userimg" required>
         <button class="btn1">Submit</button>
         </form>
     </div>

@@ -13,9 +13,11 @@ body {
   text-rendering: optimizeLegibility;
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.004);
   -webkit-font-smoothing: antialiased;
+  background:url(https://i.pinimg.com/originals/45/ce/c7/45cec757faf8d07318cc829dcf21c697.jpg);
 }
 
 #frame {
+  box-shadow: 0 0 20px #2c3e50;
   width: 95%;
   min-width: 360px;
   max-width: 1200px;
@@ -353,14 +355,9 @@ body {
 }
 #frame #sidepanel #contacts::-webkit-scrollbar {
   width: 8px;
-  /*background: #2c3e50;*/
-  /*background:#FD6585;*/
   background-image: linear-gradient( 180deg, #FFD3A5 10%, #FD6585 100%);
-  /*background-image: linear-gradient( 135deg, #FFF886 10%, #F072B6 100%);*/
-  /*background-image: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);*/
 }
 #frame #sidepanel #contacts::-webkit-scrollbar-thumb {
-  /*background-color: #243140;*/
   background-image: linear-gradient(to top, #feada6 0%, #f5efef 100%);
 }
 #frame #sidepanel #contacts ul li.contact {
@@ -375,12 +372,9 @@ body {
   }
 }
 #frame #sidepanel #contacts ul li.contact:hover {
-  /*background: #32465a;*/
   background-image: linear-gradient(to right, #f78ca0 0%, #f9748f 19%, #fd868c 60%, #fe9a8b 100%);
 }
 #frame #sidepanel #contacts ul li.contact.active {
-  /*background: #32465a;*/
-  /*background-image: linear-gradient( 112.5deg,  rgba(236,62,98,1) 1.5%, rgba(235,108,108,1) 17.9%, rgba(241,163,163,1) 57.8%, rgba(254,217,217,1) 89.9% );*/
   background-image: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
   border-right: 5px solid #fd868c;
 }
@@ -644,9 +638,13 @@ background-image: linear-gradient( 44.8deg,  rgba(255,136,102,0.67) -90.1%, rgba
 #frame .content .messages ul li.sent span {
   color:grey;
   float: right;
+
+}
+#frame .content .messages ul li.sent i {
+  color:rgba(253,101,133,1);
+  margin-left: 5px;
+  float: right;
   clear: both;
-  display: flex;
-  flex-direction: column;
 }
 
 #frame .content .messages ul li img {
@@ -759,7 +757,6 @@ background-image: linear-gradient( 44.8deg,  rgba(255,136,102,0.67) -90.1%, rgba
 
           .btn-grad:hover {
             background-position: right center; /* change the direction of the change here */
-            color: #fff;
+          /*  color: #fff;
             text-decoration: none;
-          }
-*/
+          }*/

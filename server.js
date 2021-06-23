@@ -45,14 +45,15 @@ secret:"ast+@snu",//decode or encode session
 
 
 	socket.on('myMessage', (data) => {
-        var msg = new Message({ from: data.userid, to: data.userto, message:data.message });
+        var msg = new Message({ from: data.userid, to: data.userto, message:data.message, msgReadId:data.msgreadid });
         msg.save(function(err, doc) {
           if (err) 
           	return console.error(err);
 
+          // console.log(doc.id);
           console.log("Document inserted succussfully!");
 	      User.findById(data.userto, function(err, user) { 
-			io.to(user.socketid).emit("ServerResponse", {msg: data.message, userid: data.userid, time:data.time});
+			io.to(user.socketid).emit("ServerResponse", {msg: data.message, userid: data.userid, time:data.time, msgid:doc.id, msgreadid:data.msgreadid});
 	        });
 
         });
@@ -67,7 +68,7 @@ secret:"ast+@snu",//decode or encode session
             console.log(err)
         }
         else{
-            console.log("Updated User : ", docs);
+            console.log("Updated User");
         }
     });
 
@@ -79,6 +80,42 @@ secret:"ast+@snu",//decode or encode session
  //            socket.emit("sr",{dd:data});
  //        });
  //    })
+
+socket.on("typing", function (data) {
+    data.usertoid;
+    User.findById(data.usertoid, function(err, user) { 
+    io.to(user.socketid).emit("Showtyping", data);
+    });   
+  });
+
+socket.on("stoptyping", function (data) {
+    data.usertoid;
+    User.findById(data.usertoid, function(err, user) { 
+    io.to(user.socketid).emit("stop_show_typing", data);
+    });   
+  });
+
+socket.on("msgSeen", function(data){
+    console.log(data);
+    Message.findByIdAndUpdate(data.msgid, { read: true }, 
+        function (err, docs) {
+        if (err){
+            console.log(err)
+        }
+        else{
+            console.log("Updated read");
+            User.findById(docs.from, function(err, user){
+                console.log(user.socketid, user.username);
+                console.log(docs.id, docs.msgReadId);
+                
+                io.to(user.socketid).emit("readMsg", {msgid: docs.id, msgreadid: docs.msgReadId, username: user.user, seen:true});
+            })
+        }
+    });
+
+})
+
+
 var sts;
 var img;
 socket.on('fetchMsg',(data)=>{
@@ -107,7 +144,7 @@ socket.on('fetchMsg',(data)=>{
     }, null,{ sort:{ time: 'asc' } }, 
 
     function(err,allmsg){
-    console.log(allmsg);
+    // console.log(allmsg);
     socket.emit("AllMessages", {rep: allmsg, status:sts, image:img});
     })  
 })
