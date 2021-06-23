@@ -70,7 +70,7 @@ secret:"ast+@snu",//decode or encode session
         else{
             console.log("Updated User");
         }
-    });
+    });  
 
         io.emit("userConnected", {userid: data.userid})
 	})
@@ -99,7 +99,7 @@ socket.on("msgSeen", function(data){
     console.log(data);
     Message.findByIdAndUpdate(data.msgid, { read: true }, 
         function (err, docs) {
-        if (err){
+        if (err){ 
             console.log(err)
         }
         else{

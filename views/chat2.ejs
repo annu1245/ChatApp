@@ -133,7 +133,6 @@
   var socket = io();
 
   socket.on("connect", () => {              //on => data recive  emit=>data send
-    console.log(socket.id); 
     userInfo = {"userid" : "<%=current_user._id%>", "socketid": socket.id}
     socket.emit("userData", userInfo);
     $("#profile").find("img").attr("src","<%=current_user.image%>");
@@ -159,14 +158,8 @@
     socket.emit("fetchMsg",{user: "<%=current_user._id%>", userto:userto_id});
   });
 
-// inputField = document.getElementById("#inputField");
-// inputField.addEventListener("keyup", () => {
-//   alert(inputField.value());
-//   // socket.emit("typing", {
-//   //   isTyping: inputField.value.length > 0,
-//   //   userName: <%=current_user.username%>,
-//   // });
-// });
+  socket.on("userConnected", data => $(".contact-profile").find("span").html("online"));
+
 var doneTypingInterval = 300;
 var typingTimer;
 
@@ -216,10 +209,9 @@ function convertTime(time){
 
 
 socket.on("AllMessages", (data)=>{
+
    var last_seen = data.status;
 	 var reply = data.rep;
-
-
     if (last_seen != "online"){
       time = new Date(last_seen);
       last_seen = convertTime(time);
@@ -250,10 +242,13 @@ socket.on("AllMessages", (data)=>{
 
 	$(`<li class="replies"><img src="${userto_img}" alt="" /><p>  ${message} </p><div><span> ${new_time} </span></li>`).appendTo($('.messages ul'));
 		$('.contact.active .preview').html('<span>You: </span>' + message);
+    if(reply[i].read == false)
+      socket.emit("msgSeen",{"msgid":reply[i]._id, "msgreadid":reply[i].msgReadId, "seen":true});
   }
 
-  else{
+  else{                         
     message = reply[i].message;
+    
     if($.trim(message) == '') {
       return false;
     }
@@ -262,15 +257,19 @@ socket.on("AllMessages", (data)=>{
       seen = "fas fa-check-double";  
     }
     else{
-      seen = "fa fa-check"; 
+      seen = "fa fa-check";   
+      console.log(reply[i]._id); 
     }
 
-  $('<li class="sent"><img src="<%=current_user.image%>" alt="" /><p>' + message + '</p><i class="' +seen +' '+reply[i].msgReadId '" ></i><span>' + new_time + '</span></li>').appendTo($('.messages ul')); 
-  
-  $('.contact.active .preview').html('<span>from: </span>' + message);
-  
-  }
+  $('<li class="sent"><img src="<%=current_user.image%>" alt="" /><p>' + message + '</p><i class="' +seen +' '+reply[i].msgReadId + '" ></i><span>' + new_time + '</span></li>').appendTo($('.messages ul')); 
+ } 
 }
+
+
+
+
+ 
+
   height = document.getElementsByClassName("messages")[0].scrollHeight;
   $(".messages").animate({ scrollTop: height }, "fast");
 })
@@ -287,20 +286,16 @@ socket.on("ServerResponse", (data)=>{
   $(".messages").animate({ scrollTop: height }, "slow");
 
   socket.emit("msgSeen",{"msgid":msg_id, "msgreadid":data.msgreadid, "seen":true});
+
 })
 
 socket.on("readMsg", (data)=>{
-  console.log(data);  
-  console.log(msg_read_id);
-  console.log(data.seen);
+  console.log("*************");
+  console.log(data);
+  console.log("*************"); 
+
+  msg_read_id = data.msgreadid;
   $("." + msg_read_id).attr("class", "fas fa-check-double");
-
-  // msg_id = data.msgid;
-  // massage_read_id = data.msgreadid;
-  // console.log(msg_id);
-  // console.log(message_read_id);
-  
-
 })
 
 
