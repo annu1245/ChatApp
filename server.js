@@ -95,6 +95,7 @@ socket.on("stoptyping", function (data) {
     });   
   });
 
+
 socket.on("msgSeen", function(data){
     console.log(data);
     Message.findByIdAndUpdate(data.msgid, { read: true }, 

@@ -63,7 +63,7 @@
     		<%if (practices[i].username != current_user.username) { %>
 			<li class="contact" user_id="<%= practices[i]._id %>">
 				<div class="wrap">											
-					<!-- <span class="contact-status online"></span> -->
+
               <%if (practices[i].image) {%>
               <img src="<%= practices[i].image%>" alt="" />
 
@@ -144,6 +144,7 @@
 
 //onclick
   $( ".contact" ).on( "click", function() {
+
   	$( this ).addClass("active").siblings().removeClass('active');;
     userto_id =  $( this ).attr("user_id");
     userto_name =  $( this ).find(".name").text();
@@ -158,7 +159,7 @@
     socket.emit("fetchMsg",{user: "<%=current_user._id%>", userto:userto_id});
   });
 
-  socket.on("userConnected", data => $(".contact-profile").find("span").html("online"));
+    socket.on("userConnected", data => $(".contact-profile").find("span").html("online"));
 
 var doneTypingInterval = 300;
 var typingTimer;
@@ -170,9 +171,12 @@ $("#inputField").on("keyup",function(){
   });
 })
 
+
 socket.on("Showtyping", function (data) { 
   clearTimeout(typingTimer);
+  if (data.userid == userto_id){
   $(".contact-profile").find("span").html(`${userto_name} is typing...`);
+}
 });
 
 $("#inputField").on('keydown', function () { 
@@ -183,12 +187,14 @@ $("#inputField").on('keydown', function () {
 }); 
 
 socket.on("stop_show_typing", function (data) { 
-  typingTimer = setTimeout(doneTyping, doneTypingInterval); 
+  console.log("$$$$$$$$$$$$$$$$$$$$$$$", data)
+  typingTimer = setTimeout(doneTyping, doneTypingInterval, data.usertoid, data.userid);
 });
 
-function doneTyping () {
-$(".contact-profile").find("span").html("online");
-
+function doneTyping (usertoid_p, userid_p) { 
+  console.log("#####################", usertoid_p, userto_id)
+  if (usertoid_p == "<%=current_user._id%>" && userid_p == userto_id)
+    $(".contact-profile").find("span").html("online");
 }
 
 
@@ -290,10 +296,6 @@ socket.on("ServerResponse", (data)=>{
 })
 
 socket.on("readMsg", (data)=>{
-  console.log("*************");
-  console.log(data);
-  console.log("*************"); 
-
   msg_read_id = data.msgreadid;
   $("." + msg_read_id).attr("class", "fas fa-check-double");
 })
